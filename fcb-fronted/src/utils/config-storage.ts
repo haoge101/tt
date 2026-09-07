@@ -20,6 +20,12 @@ export type PublicConfig = SystemConfig & {
   ad_image_url?: string
   ad_link_url?: string
   ad_alt?: string
+  // 新增广告代码与侧边广告配置
+  ad_code?: string
+  ad_side_enabled?: number
+  ad_side_left_code?: string
+  ad_side_right_code?: string
+  ad_side_width?: number
 }
 
 type PublicConfigInput = Omit<Partial<ConfigState>, 'showAdminAddr'> & {
@@ -38,7 +44,13 @@ export const DEFAULT_PUBLIC_CONFIG: PublicConfig = {
   max_save_seconds: 0,
   enableChunk: 0,
   showAdminAddr: 0,
-  ad_enabled: 0
+  ad_enabled: 0,
+  // defaults for new fields
+  ad_code: '',
+  ad_side_enabled: 0,
+  ad_side_left_code: '',
+  ad_side_right_code: '',
+  ad_side_width: 160
 }
 
 export const DEFAULT_CONFIG_STATE: ConfigState = {
@@ -87,7 +99,13 @@ export const DEFAULT_CONFIG_STATE: ConfigState = {
   ad_enabled: 0,
   ad_image_url: '',
   ad_link_url: '',
-  ad_alt: ''
+  ad_alt: '',
+  // 新增默认值
+  ad_code: '',
+  ad_side_enabled: 0,
+  ad_side_left_code: '',
+  ad_side_right_code: '',
+  ad_side_width: 160
 }
 
 function normalizeFileTypes(value: unknown): string[] {
@@ -143,7 +161,13 @@ export function toPublicConfig(
     ad_enabled: config.ad_enabled,
     ad_image_url: config.ad_image_url,
     ad_link_url: config.ad_link_url,
-    ad_alt: config.ad_alt
+    ad_alt: config.ad_alt,
+    // map new fields
+    ad_code: (config as any).ad_code,
+    ad_side_enabled: (config as any).ad_side_enabled,
+    ad_side_left_code: (config as any).ad_side_left_code,
+    ad_side_right_code: (config as any).ad_side_right_code,
+    ad_side_width: (config as any).ad_side_width
   }
 }
 

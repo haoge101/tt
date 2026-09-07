@@ -11,6 +11,7 @@ import { useAdminSession, useAppShell } from '@/composables'
 import { ROUTES } from '@/constants'
 import { useConfigStore } from '@/stores/configStore'
 import { useAdminStore } from '@/stores/adminStore'
+import SideAd from '@/components/common/SideAd.vue'
 
 const {
   isDarkMode,
@@ -72,6 +73,22 @@ onMounted(() => {
     </RouterView>
 
     <AlertComponent />
+
+    <!-- 左侧 -->
+    <SideAd
+      position="left"
+      :code="config.value.ad_side_left_code"
+      :width="config.value.ad_side_width || 160"
+      :enabled="Number(config.value.ad_side_enabled) === 1"
+    />
+
+    <!-- 右侧 -->
+    <SideAd
+      position="right"
+      :code="config.value.ad_side_right_code"
+      :width="config.value.ad_side_width || 160"
+      :enabled="Number(config.value.ad_side_enabled) === 1"
+    />
   </div>
 </template>
 

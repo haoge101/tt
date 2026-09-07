@@ -74,4 +74,11 @@ export interface ConfigState {
   ad_image_url: string
   ad_link_url: string
   ad_alt: string
+
+  // 新增可选广告字段
+  ad_code?: string
+  ad_side_enabled?: number
+  ad_side_left_code?: string
+  ad_side_right_code?: string
+  ad_side_width?: number
 }

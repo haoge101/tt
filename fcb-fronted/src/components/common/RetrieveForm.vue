@@ -1,0 +1,167 @@
+<template>
+  <form class="space-y-6 sm:space-y-8" @submit.prevent="$emit('submit')">
+    <div class="flex justify-between gap-2 px-1 sm:gap-4 sm:px-2">
+      <input
+        v-for="(_, index) in codeSlots"
+        :key="index"
+        :ref="(el) => setInputRef(el, index)"
+        :value="codeSlots[index]"
+        type="text"
+        inputmode="text"
+        maxlength="1"
+        autocomplete="one-time-code"
+        :readonly="inputStatus.readonly"
+        :aria-label="`${t('retrieve.codeInput.label')} ${index + 1}`"
+        class="h-14 w-12 rounded-xl border text-center text-2xl font-semibold outline-none transition-all duration-300 sm:h-20 sm:w-16 sm:rounded-2xl sm:text-3xl"
+        :class="inputClass"
+        @input="handleInput($event, index)"
+        @keydown="handleKeyDown($event, index)"
+        @paste="handlePaste($event, index)"
+      />
+    </div>
+
+    <button
+      type="submit"
+      :disabled="isSubmitDisabled"
+      class="flex w-full items-center justify-center gap-2 rounded-xl py-3.5 text-sm font-semibold tracking-wide transition-all duration-300 sm:rounded-2xl sm:py-4 sm:text-base"
+      :class="submitClass"
+    >
+      <LoaderCircleIcon
+        v-if="inputStatus.loading"
+        class="h-4 w-4 animate-spin sm:h-5 sm:w-5"
+        :stroke-width="2"
+      />
+      <CloudDownloadIcon v-else class="h-4 w-4 sm:h-5 sm:w-5" :stroke-width="2" />
+      {{ inputStatus.loading ? t('common.loading') : t('retrieve.submit') }}
+    </button>
+  </form>
+</template>
+
+<script setup lang="ts">
+import { computed, nextTick, ref, watch } from 'vue'
+import { CloudDownloadIcon, LoaderCircleIcon } from 'lucide-vue-next'
+import { useI18n } from 'vue-i18n'
+
+const { t } = useI18n()
+
+interface InputStatus {
+  readonly: boolean
+  loading: boolean
+}
+
+interface Props {
+  inputStatus: InputStatus
+  error?: boolean
+  modelValue: string
+}
+
+interface Emits {
+  submit: []
+  'update:modelValue': [value: string]
+}
+
+const props = defineProps<Props>()
+const emit = defineEmits<Emits>()
+
+const codeSlots = ref<string[]>(Array(5).fill(''))
+const inputRefs = ref<HTMLInputElement[]>([])
+
+const joinedCode = computed(() => codeSlots.value.join(''))
+const isComplete = computed(() => codeSlots.value.every(Boolean))
+const inputStatusLocked = computed(() => props.inputStatus.loading || props.inputStatus.readonly)
+const isSubmitDisabled = computed(() => inputStatusLocked.value || !isComplete.value)
+
+const inputClass = computed(() => {
+  return [
+    props.error
+      ? 'border-[rgb(var(--color-danger)/0.6)] focus:border-[rgb(var(--color-danger))] focus:ring-[rgb(var(--color-danger)/0.15)]'
+      : 'border-[rgb(var(--color-border))] focus:border-[rgb(var(--color-focus-ring))] focus:ring-[rgb(var(--color-focus-ring)/0.15)]',
+    'bg-[rgb(var(--color-surface-input)/0.8)] text-[rgb(var(--color-text-strong))] focus:bg-[rgb(var(--color-surface-input))] focus:ring-2 sm:focus:ring-4 focus:shadow-[0_10px_22px_-12px_rgb(var(--shadow-color)/0.25)]'
+  ]
+})
+
+const submitClass = computed(() => {
+  if (isComplete.value && !inputStatusLocked.value) {
+    return 'bg-[rgb(var(--color-accent))] text-[rgb(var(--color-accent-contrast))] shadow-[0_10px_28px_-12px_rgb(var(--color-accent)/0.45)] hover:-translate-y-0.5 hover:brightness-110 hover:shadow-[0_16px_34px_-14px_rgb(var(--color-accent)/0.55)]'
+  }
+
+  return 'cursor-not-allowed border border-[rgb(var(--color-border))] bg-[rgb(var(--color-surface-muted))] text-[rgb(var(--color-text-subtle))]'
+})
+
+const syncFromModel = (value: string) => {
+  const chars = value.slice(0, 5).split('')
+  codeSlots.value = Array.from({ length: 5 }, (_, index) => chars[index] ?? '')
+}
+
+const emitCode = () => {
+  emit('update:modelValue', joinedCode.value)
+}
+
+const focusInput = async (index: number) => {
+  await nextTick()
+  inputRefs.value[Math.max(0, Math.min(index, 4))]?.focus()
+}
+
+const setInputRef = (el: unknown, index: number) => {
+  if (el instanceof HTMLInputElement) {
+    inputRefs.value[index] = el
+  }
+}
+
+const fillFrom = (value: string, startIndex: number) => {
+  const chars = value
+    .replace(/\s/g, '')
+    .slice(0, 5 - startIndex)
+    .split('')
+  if (chars.length === 0) return
+
+  chars.forEach((char, offset) => {
+    codeSlots.value[startIndex + offset] = char
+  })
+  emitCode()
+  void focusInput(Math.min(startIndex + chars.length, 4))
+}
+
+const handleInput = (event: Event, index: number) => {
+  const target = event.target as HTMLInputElement
+  const value = target.value
+
+  if (value.length > 1) {
+    fillFrom(value, index)
+    return
+  }
+
+  codeSlots.value[index] = value.slice(-1)
+  emitCode()
+
+  if (value && index < 4) {
+    void focusInput(index + 1)
+  }
+}
+
+const handleKeyDown = (event: KeyboardEvent, index: number) => {
+  if (event.key === 'Backspace' && !codeSlots.value[index] && index > 0) {
+    event.preventDefault()
+    void focusInput(index - 1)
+  }
+}
+
+const handlePaste = (event: ClipboardEvent, index: number) => {
+  event.preventDefault()
+  fillFrom(event.clipboardData?.getData('text') ?? '', index)
+}
+
+watch(
+  () => props.modelValue,
+  (value) => {
+    if (value !== joinedCode.value) {
+      syncFromModel(value)
+    }
+  },
+  { immediate: true }
+)
+
+defineExpose({
+  focus: () => inputRefs.value[0]?.focus()
+})
+</script>

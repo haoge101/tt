@@ -1,0 +1,329 @@
+@import 'tailwindcss/base';
+@import 'tailwindcss/components';
+@import 'tailwindcss/utilities';
+
+:root {
+  color-scheme: light;
+
+  /* 页面：偏冷紫调的纸白，而非纯灰白 */
+  --color-page: 245 245 251;
+  --color-surface: 255 255 255;
+  --color-surface-raised: 255 255 255;
+  --color-surface-muted: 238 238 249;
+  --color-surface-input: 255 255 255;
+
+  /* 文字 */
+  --color-text: 30 41 59;
+  --color-text-strong: 15 23 42;
+  --color-text-muted: 71 85 105;
+  --color-text-subtle: 100 116 139;
+
+  /* 边框：带一点主色调的冷灰，而非纯 slate */
+  --color-border: 224 224 242;
+  --color-border-strong: 163 161 209;
+
+  /* 主色：蓝紫 + 辅助色：青 */
+  --color-accent: 79 70 229;
+  --color-accent-2: 8 145 178;
+  --color-accent-contrast: 255 255 255;
+
+  /* 状态 */
+  --color-danger: 220 38 38;
+  --color-warning: 217 119 6;
+  --color-success: 5 150 105;
+
+  /* 遮罩 */
+  --color-overlay: 15 23 42;
+
+  /* 毛玻璃 */
+  --surface-glass: rgb(var(--color-surface) / 0.82);
+  --surface-glass-strong: rgb(var(--color-surface) / 0.94);
+  --border-glass: rgb(var(--color-border) / 0.85);
+
+  /* 阴影：叠加一层主色微光，避免纯灰阴影显得单薄 */
+  --shadow-color: 15 23 42;
+  --shadow-panel:
+    0 1px 1px rgb(var(--shadow-color) / 0.04),
+    0 20px 50px -30px rgb(var(--shadow-color) / 0.25),
+    0 16px 40px -28px rgb(var(--color-accent) / 0.16);
+  --shadow-sidebar: 12px 0 40px -28px rgb(var(--shadow-color) / 0.16);
+  --shadow-card-highlight: inset 0 1px 0 rgb(255 255 255 / 0.6);
+
+  /* 滚动条 */
+  --color-scrollbar: 148 163 184;
+  --color-scrollbar-hover: 100 116 139;
+
+  /* Focus */
+  --color-focus-ring: 99 102 241;
+
+  /* Loading */
+  --loading-overlay-opacity: 0.5;
+  --spinner-size: 50px;
+  --spinner-border-width: 3px;
+}
+
+:root.dark {
+  color-scheme: dark;
+
+  /* 页面：深靛蓝而非纯 slate，配合背景光晕更有层次 */
+  --color-page: 10 11 22;
+  --color-surface: 26 27 46;
+  --color-surface-raised: 40 41 66;
+  --color-surface-muted: 22 23 40;
+  --color-surface-input: 15 16 30;
+
+  /* 文字 */
+  --color-text: 226 232 240;
+  --color-text-strong: 248 250 252;
+  --color-text-muted: 148 163 184;
+  --color-text-subtle: 100 116 139;
+
+  /* 边框 */
+  --color-border: 54 55 84;
+  --color-border-strong: 104 103 148;
+
+  /* 主色 */
+  --color-accent: 129 140 248;
+  --color-accent-2: 34 211 238;
+  --color-accent-contrast: 15 23 42;
+
+  /* 状态 */
+  --color-danger: 248 113 113;
+  --color-warning: 251 191 36;
+  --color-success: 52 211 153;
+
+  /* 毛玻璃 */
+  --surface-glass: rgb(var(--color-surface) / 0.82);
+  --surface-glass-strong: rgb(var(--color-surface-raised) / 0.92);
+  --border-glass: rgb(var(--color-border) / 0.75);
+
+  /* 阴影 */
+  --shadow-color: 0 0 0;
+  --shadow-panel:
+    0 1px 1px rgb(0 0 0 / 0.3),
+    0 20px 50px -30px rgb(var(--shadow-color) / 0.6),
+    0 20px 45px -24px rgb(var(--color-accent) / 0.25);
+  --shadow-sidebar: 12px 0 40px -28px rgb(var(--shadow-color) / 0.4);
+  --shadow-card-highlight: inset 0 1px 0 rgb(255 255 255 / 0.06);
+
+  /* 滚动条 */
+  --color-scrollbar: 71 85 105;
+  --color-scrollbar-hover: 100 116 139;
+
+  /* Focus */
+  --color-focus-ring: 129 140 248;
+}
+
+@font-face {
+  font-family: 'DingTalk';
+  src: url('@/assets/font/DingTalk.ttf') format('truetype');
+  font-display: swap;
+}
+
+body {
+  font-family: 'DingTalk', sans-serif;
+  background-color: rgb(var(--color-page));
+  color: rgb(var(--color-text));
+}
+
+::selection {
+  background-color: rgb(var(--color-accent) / 0.18);
+}
+
+@layer components {
+  .theme-page {
+    background-color: rgb(var(--color-page));
+    color: rgb(var(--color-text));
+  }
+
+  .theme-surface {
+    background: var(--surface-glass);
+    border-color: var(--border-glass);
+  }
+
+  .theme-surface-strong {
+    background: var(--surface-glass-strong);
+    border-color: var(--border-glass);
+  }
+
+  .theme-panel {
+    background: var(--surface-glass);
+    border-color: var(--border-glass);
+    box-shadow: var(--shadow-panel);
+  }
+
+  .theme-divider {
+    border-color: rgb(var(--color-border) / 0.8);
+  }
+
+  .theme-text {
+    color: rgb(var(--color-text));
+  }
+
+  .theme-text-strong {
+    color: rgb(var(--color-text-strong));
+  }
+
+  .theme-text-muted {
+    color: rgb(var(--color-text-muted));
+  }
+
+  .theme-icon-button {
+    color: rgb(var(--color-text-muted));
+  }
+
+  .theme-icon-button:hover {
+    background-color: rgb(var(--color-accent) / 0.08);
+    color: rgb(var(--color-accent));
+  }
+
+  .theme-brand {
+    background-color: rgb(var(--color-accent));
+    color: rgb(var(--color-accent-contrast));
+  }
+
+  .theme-nav-item {
+    border-color: transparent;
+    color: rgb(var(--color-text-muted));
+  }
+
+  .theme-nav-item:hover {
+    background-color: rgb(var(--color-accent) / 0.07);
+    color: rgb(var(--color-text-strong));
+  }
+
+  .theme-nav-item-active {
+    border-color: rgb(var(--color-accent) / 0.25);
+    background-color: rgb(var(--color-accent) / 0.1);
+    color: rgb(var(--color-accent));
+  }
+
+  .theme-control {
+    background-color: rgb(var(--color-surface-input) / 0.9);
+    border-color: rgb(var(--color-border));
+    color: rgb(var(--color-text-strong));
+  }
+
+  .theme-control::placeholder {
+    color: rgb(var(--color-text-subtle));
+  }
+
+  .theme-control:hover {
+    border-color: rgb(var(--color-border-strong));
+  }
+
+  .theme-control:focus {
+    border-color: rgb(var(--color-focus-ring));
+    --tw-ring-color: rgb(var(--color-focus-ring) / 0.25);
+  }
+
+  .theme-warning {
+    color: rgb(var(--color-warning));
+  }
+
+  /* 卡片氛围：叠加主色微光的阴影 + 顶部高光，避免"一块白板"的单薄感 */
+  .theme-panel,
+  .theme-surface,
+  .theme-surface-strong {
+    box-shadow: var(--shadow-panel), var(--shadow-card-highlight);
+  }
+}
+
+/*
+ * 页面背景：用两块柔和的主色/辅助色光斑 + 细点阵网格，
+ * 替代纯色平板背景，呼应"文件在网络间传输"的主题。
+ * 挂在 .app-container 上（App.vue 的根节点），固定定位覆盖视口。
+ */
+.app-container {
+  position: relative;
+  isolation: isolate;
+}
+
+.app-container::before,
+.app-container::after {
+  content: '';
+  position: fixed;
+  inset: 0;
+  z-index: -1;
+  pointer-events: none;
+}
+
+.app-container::before {
+  background-image:
+    radial-gradient(ellipse 60% 46% at 12% -8%, rgb(var(--color-accent) / 0.16), transparent 62%),
+    radial-gradient(ellipse 52% 42% at 108% 12%, rgb(var(--color-accent-2) / 0.14), transparent 60%),
+    radial-gradient(ellipse 48% 38% at 46% 118%, rgb(var(--color-accent) / 0.10), transparent 60%);
+  transition: opacity 0.5s ease;
+}
+
+.app-container::after {
+  opacity: 0.55;
+  background-image: radial-gradient(rgb(var(--color-border-strong) / 0.4) 1px, transparent 1px);
+  background-size: 26px 26px;
+  mask-image: radial-gradient(ellipse 75% 65% at 50% 15%, black 35%, transparent 88%);
+  -webkit-mask-image: radial-gradient(ellipse 75% 65% at 50% 15%, black 35%, transparent 88%);
+}
+
+.dark .app-container::before {
+  background-image:
+    radial-gradient(ellipse 60% 46% at 12% -8%, rgb(var(--color-accent) / 0.22), transparent 62%),
+    radial-gradient(ellipse 52% 42% at 108% 12%, rgb(var(--color-accent-2) / 0.20), transparent 60%),
+    radial-gradient(ellipse 48% 38% at 46% 118%, rgb(var(--color-accent) / 0.16), transparent 60%);
+}
+
+.dark .app-container::after {
+  opacity: 0.4;
+}
+
+/* Hero 页（发送 / 接收）：去掉页面级实色背景，让全局光斑透出来，
+   并按页面语义（发送=主色，接收=辅助色）叠加一层聚光，形成呼吸感 */
+.hero-page.theme-page {
+  background-color: transparent;
+}
+
+.hero-page {
+  position: relative;
+}
+
+.hero-page::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  z-index: 0;
+  pointer-events: none;
+  background-image: radial-gradient(
+    ellipse 62% 44% at 50% 20%,
+    rgb(var(--hero-tint) / 0.24),
+    transparent 64%
+  );
+}
+
+.hero-page--send {
+  --hero-tint: var(--color-accent);
+}
+
+.hero-page--retrieve {
+  --hero-tint: var(--color-accent-2);
+}
+
+.dark .hero-page::before {
+  background-image: radial-gradient(
+    ellipse 62% 44% at 50% 20%,
+    rgb(var(--hero-tint) / 0.32),
+    transparent 64%
+  );
+}
+.shadow-sm {
+  box-shadow:
+    var(--shadow-card-highlight),
+    0 1px 2px rgb(var(--shadow-color) / 0.06),
+    0 10px 26px -16px rgb(var(--color-accent) / 0.35);
+}
+
+.shadow-2xl {
+  box-shadow:
+    var(--shadow-card-highlight),
+    0 25px 50px -14px rgb(var(--shadow-color) / 0.35),
+    0 18px 40px -12px rgb(var(--color-accent) / 0.28);
+}
+

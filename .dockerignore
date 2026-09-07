@@ -1,0 +1,57 @@
+# Git
+.git
+.gitignore
+.gitattributes
+
+# IDE
+.idea
+.vscode
+*.swp
+*.swo
+
+# Documentation
+*.md
+docs/
+LICENSE
+
+# Development
+.venv
+__pycache__
+*.pyc
+*.pyo
+.pytest_cache
+.coverage
+htmlcov/
+
+# macOS
+.DS_Store
+._*
+
+# Frontend source: fcb-fronted/ (2024 主题) 需要保留在构建上下文中，
+# 因为 Dockerfile 现在直接从本地目录构建它，而不是从 GitHub 克隆。
+# 仅排除其中的依赖/构建产物/缓存，源码本身仍需发送给 Docker daemon。
+fcb-fronted/node_modules/
+fcb-fronted/dist/
+fcb-fronted/.git/
+fcb-fronted/.vite/
+
+# 已构建的主题产物目录（由 Dockerfile 构建阶段生成，不应来自宿主机）
+themes/
+
+# Test files
+test_*.py
+tests/
+
+# Data (should be mounted as volume)
+data/
+
+# GitHub
+.github/
+
+# Docker
+Dockerfile
+docker-compose.yml
+.dockerignore
+
+# Claude
+.claude/
